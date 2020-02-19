@@ -1,0 +1,44 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# vim: ts=4
+###
+# 
+# Copyright (c) 2020 Andalugeeks
+# Authors:
+# - J. Félix Ontañón <felixonta@gmail.com>
+
+import andaluh
+import json
+
+if __name__ == '__main__':
+    import sys
+    from optparse import OptionParser
+
+    parser = OptionParser()
+    parser.add_option("-i", "--input", dest="file_in", help="Spanish JSON minecraft strings file.")
+    parser.add_option("-o", "--output", dest="file_out", help="File to save output. Prints to stdout if not included.")
+    (options, args) = parser.parse_args()
+
+    if not options.file_in:
+        parser.error('filename not given, get help with --help')
+
+    else:
+        infile_path = options.file_in
+        with open(infile_path, 'r') as file_in:
+
+            minecraft = json.loads(file_in.read())
+            minecraft_and = {}            
+
+            for key in  minecraft.keys():
+                minecraft_and[key] = andaluh.epa(minecraft[key])
+
+            if not options.file_out:
+                print(minecraft_and)
+            else:
+                outfile_path = options.file_out
+                with open(outfile_path, 'w') as fileout:
+                    fileout.write(json.dumps(minecraft_and, indent=4, sort_keys=True))
+                    fileout.close()
+
+        file_in.close()
+        sys.exit(0)
